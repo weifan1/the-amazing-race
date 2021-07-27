@@ -14,8 +14,8 @@ namespace the_amazing_race_wei_fan
             }
             else
             {
-                Console.WriteLine("Error: Expected a command line argument, for the input text-file.");
-                Console.WriteLine("Remedy: Specify the input text-file from the command line,");
+                Console.WriteLine("Error: Expected a command line argument, for the input file.");
+                Console.WriteLine("Remedy: Specify the input file from the command line,");
                 Console.WriteLine("\tor just modify the Debug tab of the Project Properties page.");
             }
 
@@ -28,14 +28,22 @@ namespace the_amazing_race_wei_fan
         {
             List<string> theInputLines = new List<string>();
 
-            using (StreamReader theStreamReader = new StreamReader(theFileName))
+            try
             {
-                while (!theStreamReader.EndOfStream)
+                using (StreamReader theStreamReader = new StreamReader(theFileName))
                 {
-                    string Line = theStreamReader.ReadLine();
-                    Console.WriteLine(Line);
-                    theInputLines.Add(Line);
+                    while (!theStreamReader.EndOfStream)
+                    {
+                        string Line = theStreamReader.ReadLine();
+                        theInputLines.Add(Line);
+                        Console.WriteLine(Line);
+                    }
                 }
+            }
+            catch(FileNotFoundException ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine("Remedy: verify the path, name, and existence of the file.");
             }
 
             ProcessInput(theInputLines);
