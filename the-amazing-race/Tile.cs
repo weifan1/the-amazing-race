@@ -94,6 +94,7 @@ namespace the_amazing_race
             List<Tile> tilesAlreadyChecked = new List<Tile>();
 
             Tile spotlightTile = this;
+            path.Add(this);
 
             while (spotlightTile != someOtherTile)
             {
