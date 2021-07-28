@@ -1,18 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace the_amazing_race_wei_fan
+﻿namespace the_amazing_race
 {
     class Tile
     {
-        private Position MyPosition;
-        private bool AllowsMovement;
+        public readonly Position MyPosition;
+        public readonly bool AllowsMovement;
 
         public Tile(Position position, bool allowsMovement)
         {
             MyPosition = position;
             AllowsMovement = allowsMovement;
+        }
+
+        public void FindImmediateNeighbors(Board board)
+        {
+
+        }
+
+        public void CalculatePathDistanceToAllOtherTiles(Board board)
+        {
+
         }
     }
 }

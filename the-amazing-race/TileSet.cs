@@ -1,4 +1,4 @@
-﻿namespace the_amazing_race_wei_fan
+﻿namespace the_amazing_race
 {
     enum TileSetType
     {

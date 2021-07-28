@@ -1,14 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace the_amazing_race_wei_fan
+namespace the_amazing_race
 {
     class Board
     {
-        private TileSet TheTileSet = new TileSet(TileSetType.Square);
-        
-        private List<Tile> Tiles = new List<Tile>();
+        public readonly TileSet MyTileSet;
+        private readonly List<Tile> MyTiles = new List<Tile>();
 
+        public Board(TileSet tileSet)
+        {
+            MyTileSet = tileSet;
+        }
+
+        public void AddTile(Tile tile)
+        {
+            MyTiles.Add(tile);
+
+            Console.WriteLine("\tAdded a tile at " + tile.MyPosition.X + ", " + tile.MyPosition.Y + " which " + (tile.AllowsMovement ? "allows" : "does not allow") + " movement.");
+        }
+
+        public void AcquaintEachTileWithItsImmediateNeighbors()
+        {
+            foreach (Tile tile in MyTiles)
+            {
+                tile.FindImmediateNeighbors(this);
+            }
+        }
+
+        public void HaveEachTileCalculateItsPathDistanceToAllOtherTiles()
+        {
+            foreach (Tile tile in MyTiles)
+            {
+                tile.CalculatePathDistanceToAllOtherTiles(this);
+            }
+        }
     }
 }

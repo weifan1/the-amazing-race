@@ -1,25 +1,77 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace the_amazing_race_wei_fan
+namespace the_amazing_race
 {
     class Position
     {
-        public double x;
-        public double y;
+        public static Position operator +(Position a, Position b) => new Position(
+                a.X + b.X,
+                a.Y + b.Y);
+        public static Position operator -(Position a, Position b) => new Position(
+                a.X - b.X,
+                a.Y - b.Y);
+        public static Position operator *(Position p, double scalar) => new Position(
+                p.X * scalar,
+                p.Y * scalar);
+        public static Position operator *(double scalar, Position p) => new Position(
+                p.X * scalar,
+                p.Y * scalar);
+        public static Position operator /(Position p, double scalar) => new Position(
+                p.X / scalar,
+                p.Y / scalar);  //  no point in catching the DivideByZeroException, only to rethrow
+        public static Position operator /(double scalar, Position p) => new Position(
+                p.X / scalar,
+                p.Y / scalar);  //  no point in catching the DivideByZeroException, only to rethrow
 
-        public Position(double _x, double _y)
+        public readonly double X;
+        public readonly double Y;
+
+        public Position(double x, double y)
         {
-            x = _x;
-            y = _y;
+            X = x;
+            Y = y;
         }
 
-        public double DistanceTo(Position someOtherPosition)
+        public double GetAngleTo(Position someOtherPosition) => (this - someOtherPosition).GetAngle();
+
+        public double GetAngle()
         {
-            double dX = x - someOtherPosition.x;
-            double dY = y - someOtherPosition.y;
-            return Math.Sqrt(dX * dX + dY * dY);
+            if (X == 0 && Y == 0)
+            {
+                return Double.NaN;
+            }
+
+            if (X == 0)
+            {
+                return Y > 0
+                        ? Math.PI / 2
+                        : Math.PI * 3 / 2;
+            }
+
+            if (Y == 0)
+            {
+                return X > 0
+                        ? 0
+                        : Math.PI;
+            }
+
+            return Math.Atan(Y / X) + (X < 0 ? Math.PI : 0);
         }
+
+        public Position Rotate(double angle)
+        {
+            double cos = Math.Cos(angle);
+            double sin = Math.Sin(angle);
+
+            return new Position(
+                    cos * X - sin * Y,
+                    sin * X + cos * Y);
+        }
+
+        public double GetDistanceTo(Position someOtherPosition) => (someOtherPosition - this).GetLength();
+
+        public double GetLength() => Math.Sqrt(X * X + Y * Y);
+
+        public double Dot(Position someOtherPosition) => (this.X * someOtherPosition.X + this.Y * someOtherPosition.Y);
     }
 }
