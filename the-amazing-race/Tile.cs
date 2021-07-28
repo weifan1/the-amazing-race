@@ -47,7 +47,7 @@ namespace the_amazing_race
                 {
                     ImmediateNeighbors.Add(tile);
 
-                    DebugConsole.WriteLine("\t\t- met an immediate neighbor, the " + tile + ".");
+                    DebugConsole.WriteLine("\t\t- met an immediate neighbor; the " + tile + ".");
                 }
             }
         }
@@ -77,14 +77,32 @@ namespace the_amazing_race
                         {
                             distantNeighbor.NumberOfHopsToOtherTiles.Add(this, reachablyDistantNeighbor.NumberOfHopsToOtherTiles[this] + 1);
                             reachablyDistantNeighbors.Add(distantNeighbor);
-                            DebugConsole.WriteLine("\t\t- discovered a reachably distant neighbor, the " + distantNeighbor + ".");
+                            DebugConsole.WriteLine("\t\t- discovered a reachably distant neighbor; the " + distantNeighbor + ".");
                         }
-
                     }
 
                     reachablyDistantNeighbors.Remove(reachablyDistantNeighbor);
                 }
             }
+        }
+
+        public Tile[] FindAnyShortestPathTo(Tile someOtherTile)
+        {
+            if (!this.NumberOfHopsToOtherTiles.ContainsKey(someOtherTile))
+            {
+                throw new Exception("The " + someOtherTile + " is not reachable from " + this);
+            }
+
+            List<Tile> path = new List<Tile>();
+
+            Tile spotlightTile = this;
+
+            foreach (Tile immediateNeighbor in spotlightTile.ImmediateNeighbors)
+            {
+
+            }
+
+            return path.ToArray();
         }
     }
 }

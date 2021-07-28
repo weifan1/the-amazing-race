@@ -8,6 +8,9 @@ namespace the_amazing_race
         public readonly TileSet MyTileSet;
         public readonly List<Tile> MyTiles = new List<Tile>();
 
+        public Tile EntranceTile;
+        public Tile ExitTile;
+
         public Board(TileSet tileSet)
         {
             MyTileSet = tileSet;

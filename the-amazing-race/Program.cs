@@ -22,6 +22,10 @@ namespace the_amazing_race
                 Board board = CreateBoardFromInputOfUnknownFormat(inputStrings);
                 board.IntroduceEachTileToImmediateNeighborsWhoAreNotItself();
                 board.HaveEachTileCalculateItsNumberOfHopsToReachablyDistantNeighborsStartingWithItself();
+                
+                Tile[] path = board.EntranceTile.FindAnyShortestPathTo(board.ExitTile);
+
+                WriteOutput(path);
             }
             catch (Exception exception)
             {
@@ -31,6 +35,16 @@ namespace the_amazing_race
             Console.WriteLine("\nThe Amazing Race has ended.");
             Console.WriteLine("Press any key to close the console.");
             Console.ReadKey();
+        }
+
+        private static void WriteOutput(Tile[] path)
+        {
+            Console.WriteLine();
+
+            for (int i = 1; i <= path.Length; i++)
+            {
+                Console.WriteLine("\tStep " + i + ": the " + path[i]);
+            }
         }
 
         private static string[] ReadInput(string fileName)
@@ -94,6 +108,16 @@ namespace the_amazing_race
                         Tile tile = new Tile(position, allowsMovement);
 
                         board.AddTile(tile);
+
+                        if (allowsMovement && y == 0)
+                        {
+                            board.EntranceTile = tile;
+                        }
+
+                        if (allowsMovement && y == inputStrings.Length - 1)
+                        {
+                            board.ExitTile = tile;
+                        }
                     }
                 }
             }
@@ -148,12 +172,16 @@ namespace the_amazing_race
             }
             catch (FormatException exception)
             {
-                throw new Exception("The input data doesn't conform to the original format as expected.", exception);
+                throw new Exception("The input data doesn't conform to the custom format as expected.", exception);
             }
             catch (IndexOutOfRangeException exception)
             {
-                throw new Exception("The input data doesn't conform to the original format as expected.", exception);
+                throw new Exception("The input data doesn't conform to the custom format as expected.", exception);
             }
+
+
+            board.EntranceTile = board.MyTiles[0];
+            board.EntranceTile = board.MyTiles[board.MyTiles.Count - 1];
 
             return board;
         }
