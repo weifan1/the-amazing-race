@@ -34,6 +34,7 @@
                      * Sure, this may look hacky.
                      * And sure, it's only here because C# insists.
                      * But as it turns out, diangles are a real thing in curved space!
+                     * 
                      * Hack gracefully explained away.
                     */
                     return 2;

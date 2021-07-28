@@ -1,10 +1,11 @@
 ﻿using System;
 
+#pragma warning disable CS0162 // Unreachable code detected
 namespace the_amazing_race
 {
     class DebugConsole
     {
-        private static bool isEnabled = false;
+        private const bool isEnabled = false;
 
         public static void WriteLine(string line)
         {
@@ -15,3 +16,4 @@ namespace the_amazing_race
         }
     }
 }
+#pragma warning restore CS0162 // Unreachable code detected

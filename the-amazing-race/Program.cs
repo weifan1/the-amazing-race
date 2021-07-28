@@ -77,9 +77,7 @@ namespace the_amazing_race
         {
             bool isInputOfOriginalFormat = true;
 
-            string firstInputString = inputStrings[0].ToLower();
-
-            foreach (char c in firstInputString)
+            foreach (char c in inputStrings[0])
             {
                 bool is0 = (c == '0');
                 bool is1 = (c == '1');
@@ -149,7 +147,9 @@ namespace the_amazing_race
         {
             TileSetType tileSetType;
 
-            switch (inputStrings[0].ToLower())
+            string firstInputString = inputStrings[0].ToLower();
+
+            switch (firstInputString)
             {
                 case "triangular":
                     tileSetType = TileSetType.Triangular;
@@ -164,7 +164,7 @@ namespace the_amazing_race
                     break;
 
                 default:
-                    throw new InvalidDataException("The custom format requires the first input line to be one of these exact words: triangular, square, hexagonal.");
+                    throw new InvalidDataException("The custom format is insensitive to case, but requires the first input line to be one of these exact words: triangular, square, hexagonal.");
             }
 
             TileSet tileSet = new TileSet(tileSetType);
