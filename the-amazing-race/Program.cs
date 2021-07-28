@@ -13,6 +13,11 @@ namespace the_amazing_race
             if (args.Length == 0)
             {
                 Console.Error.WriteLine("\nExpected a single command line argument for the input file and if applicable, its path.");
+                /*
+                 * If you can read this, then you have access to the source.
+                 * And if you have access to the source, then it would be much more convenient to specify command line arguments
+                 * from the Startup section of the Debug tab of the Project Properties page.
+                 */
             }
             else
             {
@@ -35,7 +40,7 @@ namespace the_amazing_race
             }
 
             Console.WriteLine("\nThe Amazing Race has ended.");
-            Console.WriteLine("Press any key to close the console.");
+            Console.WriteLine("\nPress any key to close the console.");
 
             Console.ReadKey();
         }
@@ -185,12 +190,12 @@ namespace the_amazing_race
 
                     board.AddTile(tile);
 
-                    if (i == 0)
+                    if (i == 1)
                     {
                         board.EntranceTile = tile;
                     }
 
-                    if (i == board.MyTiles.Count - 1)
+                    if (i == inputStrings.Length - 1)
                     {
                         board.ExitTile = tile;
                     }

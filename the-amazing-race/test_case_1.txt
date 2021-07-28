@@ -1,6 +1,10 @@
 hexagonal
 0,1,true
 0,2,true
-0,3,false
+0,3,true
 0,4,true
-0,5,true
+0,5,false
+0,6,true
+0,7,true
+0,8,true
+0,9,true
