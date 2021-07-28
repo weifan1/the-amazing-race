@@ -18,10 +18,10 @@ namespace the_amazing_race
                 p.Y * scalar);
         public static Position operator /(Position p, double scalar) => new Position(
                 p.X / scalar,
-                p.Y / scalar);  //  no point in catching the DivideByZeroException, only to rethrow
+                p.Y / scalar);  //  no point in catching the obvious DivideByZeroException, only to rethrow
         public static Position operator /(double scalar, Position p) => new Position(
                 p.X / scalar,
-                p.Y / scalar);  //  no point in catching the DivideByZeroException, only to rethrow
+                p.Y / scalar);  //  no point in catching the obvious DivideByZeroException, only to rethrow
 
         public readonly double X;
         public readonly double Y;
@@ -38,7 +38,7 @@ namespace the_amazing_race
         {
             if (X == 0 && Y == 0)
             {
-                return Double.NaN;
+                throw new NotFiniteNumberException("The arc tangent of zero over zero cannot strictly be defined for every possible context of its use.");
             }
 
             if (X == 0)

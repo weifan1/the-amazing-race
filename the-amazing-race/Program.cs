@@ -6,102 +6,106 @@ namespace the_amazing_race
 {
     class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Console.WriteLine("\nThe Amazing Race has begun.");
 
-            if (args.Length == 0)
+            try
             {
-                Console.Error.WriteLine("\nError: Expected a command line argument, for the input file.");
-                Console.Error.WriteLine("Remedy: Specify the input file from the command line,");
-                Console.Error.WriteLine("\tor just modify the Debug tab of the Project Properties page, if that's available.");
-            }
-            else
-            {
-/*
-                try
+                if (args.Length == 0)
                 {
-*/
-                    string[] inputStrings = ReadInput(args[0]);
-                    
-                    Board board = CreateBoardFromInputOfUnknownFormat(inputStrings);
+                    throw new Exception("Expected a single command line argument for the input file and if applicable, its path.");
+                }
 
-                    board.AcquaintEachTileWithItsImmediateNeighbors();
-                    board.HaveEachTileCalculateItsPathDistanceToAllOtherTiles();
-/*
-                }
-                catch (Exception exception)
-                {
-                    Console.Error.WriteLine("\nError: " + exception.Message);
-                    throw;
-                }
-*/
+                string[] inputStrings = ReadInput(args[0]);
+
+                Board board = CreateBoardFromInputOfUnknownFormat(inputStrings);
+                board.IntroduceEachTileToImmediateNeighborsWhoAreNotItself();
+                board.HaveEachTileCalculateItsNumberOfHopsToReachablyDistantNeighborsStartingWithItself();
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine("\n" + exception.Message);
             }
 
             Console.WriteLine("\nThe Amazing Race has ended.");
-            Console.WriteLine("Press any key to close the console.\n");
+            Console.WriteLine("Press any key to close the console.");
             Console.ReadKey();
         }
 
-        static string[] ReadInput(string fileName)
+        private static string[] ReadInput(string fileName)
         {
             List<string> inputStringList = new List<string>();
 
-            using (StreamReader theStreamReader = new StreamReader(fileName))
+            try
             {
-                while (!theStreamReader.EndOfStream)
+                using (StreamReader theStreamReader = new StreamReader(fileName))
                 {
-                    string Line = theStreamReader.ReadLine();
-                    inputStringList.Add(Line);
+                    while (!theStreamReader.EndOfStream)
+                    {
+                        string Line = theStreamReader.ReadLine();
+                        inputStringList.Add(Line);
+                    }
                 }
+            }
+            catch (FileNotFoundException exception)
+            {
+                throw new Exception("The specified input file, " + fileName + ", could not be found.", exception);
             }
 
             return inputStringList.ToArray();
         }
 
-        static Board CreateBoardFromInputOfUnknownFormat(string[] inputStrings)
+        private static Board CreateBoardFromInputOfUnknownFormat(string[] inputStrings)
         {
             string theFirstInputString = inputStrings[0].ToLower();
-            bool isRequiredStyleInput = theFirstInputString.Contains("1");
+            bool isInputOfOriginalFormat = theFirstInputString.Contains("1");
 
-            if (isRequiredStyleInput)
+            if (isInputOfOriginalFormat)
             {
-                Console.WriteLine("\nAt first glance, the input file appears to be of the original format.");
+                DebugConsole.WriteLine("\nAt first glance, the input file appears to be of the original format.");
 
                 return CreateBoardFromInputOfOriginalFormat(inputStrings);
             }
             else
             {
-                Console.WriteLine("\nAt first glance, the input file appears to be of the custom format.");
+                DebugConsole.WriteLine("\nAt first glance, the input file appears to be of the custom format.");
 
                 return CreateBoardFromInputOfCustomFormat(inputStrings);
             }
         }
 
-        static Board CreateBoardFromInputOfOriginalFormat(string[] inputStrings)
+        private static Board CreateBoardFromInputOfOriginalFormat(string[] inputStrings)
         {
             TileSet tileSet = new TileSet(TileSetType.Square);
 
             Board board = new Board(tileSet);
 
-            for (int y = 1; y < inputStrings.Length; y++)
+            try
             {
-                for (int x = 0; x < inputStrings[y].Length; x++)
+                for (int y = 0; y < inputStrings.Length; y++)
                 {
-                    char c = inputStrings[y][x];
-                    bool allowsMovement = (c == '1');
+                    for (int x = 0; x < inputStrings[y].Length; x++)
+                    {
+                        char c = inputStrings[y][x];
+                        bool allowsMovement = (c == '1');
 
-                    Position position = new Position(x, y);
-                    Tile tile = new Tile(position, allowsMovement);
+                        Position position = new Position(x, y);
+                        Tile tile = new Tile(position, allowsMovement);
 
-                    board.AddTile(tile);
+                        board.AddTile(tile);
+                    }
                 }
+            }
+            catch (IndexOutOfRangeException exception)
+            {
+                throw new Exception("The input data doesn't conform to the original format as expected.", exception);
             }
 
             return board;
         }
 
-        static Board CreateBoardFromInputOfCustomFormat(string[] inputStrings)
+        private static Board CreateBoardFromInputOfCustomFormat(string[] inputStrings)
         {
             TileSetType tileSetType;
 
@@ -127,17 +131,28 @@ namespace the_amazing_race
 
             Board board = new Board(tileSet);
 
-            for (int i = 1; i < inputStrings.Length; i++)
+            try
             {
-                string[] inputParameters = inputStrings[i].Split(',');
-                double x = Double.Parse(inputParameters[0]);
-                double y = Double.Parse(inputParameters[1]);
-                bool allowsMovement = Boolean.Parse(inputParameters[2]);
+                for (int i = 1; i < inputStrings.Length; i++)
+                {
+                    string[] inputParameters = inputStrings[i].Split(',');
+                    double x = Double.Parse(inputParameters[0]);
+                    double y = Double.Parse(inputParameters[1]);
+                    bool allowsMovement = Boolean.Parse(inputParameters[2]);
 
-                Position position = new Position(x, y);
-                Tile tile = new Tile(position, allowsMovement);
+                    Position position = new Position(x, y);
+                    Tile tile = new Tile(position, allowsMovement);
 
-                board.AddTile(tile);
+                    board.AddTile(tile);
+                }
+            }
+            catch (FormatException exception)
+            {
+                throw new Exception("The input data doesn't conform to the original format as expected.", exception);
+            }
+            catch (IndexOutOfRangeException exception)
+            {
+                throw new Exception("The input data doesn't conform to the original format as expected.", exception);
             }
 
             return board;

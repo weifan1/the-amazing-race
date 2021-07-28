@@ -6,7 +6,7 @@ namespace the_amazing_race
     class Board
     {
         public readonly TileSet MyTileSet;
-        private readonly List<Tile> MyTiles = new List<Tile>();
+        public readonly List<Tile> MyTiles = new List<Tile>();
 
         public Board(TileSet tileSet)
         {
@@ -17,22 +17,22 @@ namespace the_amazing_race
         {
             MyTiles.Add(tile);
 
-            Console.WriteLine("\tAdded a tile at " + tile.MyPosition.X + ", " + tile.MyPosition.Y + " which " + (tile.AllowsMovement ? "allows" : "does not allow") + " movement.");
+            DebugConsole.WriteLine("\tAdding " + tile + ".");
         }
 
-        public void AcquaintEachTileWithItsImmediateNeighbors()
+        public void IntroduceEachTileToImmediateNeighborsWhoAreNotItself()
         {
             foreach (Tile tile in MyTiles)
             {
-                tile.FindImmediateNeighbors(this);
+                tile.MeetImmediateNeighborsWhoAreNotMyself(this);
             }
         }
 
-        public void HaveEachTileCalculateItsPathDistanceToAllOtherTiles()
+        public void HaveEachTileCalculateItsNumberOfHopsToReachablyDistantNeighborsStartingWithItself()
         {
             foreach (Tile tile in MyTiles)
             {
-                tile.CalculatePathDistanceToAllOtherTiles(this);
+                tile.CalculateMyNumberOfHopsToReachablyDistantNeighborsStartingWithMyself(this);
             }
         }
     }
