@@ -26,11 +26,8 @@ namespace the_amazing_race
             string roundedCoordinates = "("
                 + String.Format("{0:N4}", MyPosition.X) + ", "
                 + String.Format("{0:N4}", MyPosition.Y) + ")";
-            string allowsOrDoesNotAllow = AllowsMovement
-                ? "    allows    "
-                : "does not allow";
 
-            return "tile at " + roundedCoordinates + " which " + allowsOrDoesNotAllow + " movement";
+            return "tile at " + roundedCoordinates;
         }
 
         public void MeetImmediateNeighborsWhoAreNotMyself(Board board)
@@ -94,12 +91,34 @@ namespace the_amazing_race
             }
 
             List<Tile> path = new List<Tile>();
+            List<Tile> tilesAlreadyChecked = new List<Tile>();
 
             Tile spotlightTile = this;
 
-            foreach (Tile immediateNeighbor in spotlightTile.ImmediateNeighbors)
+            while (spotlightTile != someOtherTile)
             {
+                tilesAlreadyChecked.Add(spotlightTile);
 
+                try
+                {
+                    int fewestHops = spotlightTile.NumberOfHopsToOtherTiles[someOtherTile];
+
+                    foreach (Tile immediateNeighbor in spotlightTile.ImmediateNeighbors)
+                    {
+                        if (immediateNeighbor.AllowsMovement
+                            && immediateNeighbor.NumberOfHopsToOtherTiles[someOtherTile] < fewestHops
+                            && !tilesAlreadyChecked.Contains(immediateNeighbor))
+                        {
+                            fewestHops = immediateNeighbor.NumberOfHopsToOtherTiles[someOtherTile];
+                            spotlightTile = immediateNeighbor;
+                            path.Add(immediateNeighbor);
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.Error.WriteLine("The " + spotlightTile + " encountered an error.", exception);
+                }
             }
 
             return path.ToArray();

@@ -34,6 +34,7 @@ namespace the_amazing_race
 
             Console.WriteLine("\nThe Amazing Race has ended.");
             Console.WriteLine("Press any key to close the console.");
+
             Console.ReadKey();
         }
 
@@ -41,9 +42,9 @@ namespace the_amazing_race
         {
             Console.WriteLine();
 
-            for (int i = 1; i <= path.Length; i++)
+            for (int i = 0; i < path.Length; i++)
             {
-                Console.WriteLine("\tStep " + i + ": the " + path[i]);
+                Console.WriteLine("\tStep " + (i + 1) + ": the " + path[i]);
             }
         }
 
@@ -181,7 +182,7 @@ namespace the_amazing_race
 
 
             board.EntranceTile = board.MyTiles[0];
-            board.EntranceTile = board.MyTiles[board.MyTiles.Count - 1];
+            board.ExitTile = board.MyTiles[board.MyTiles.Count - 1];
 
             return board;
         }

@@ -1,6 +1,6 @@
-hexagonal
+triangular
 0,1,true
 0,2,true
-0,3,false
+0,3,true
 0,4,true
 0,5,true
