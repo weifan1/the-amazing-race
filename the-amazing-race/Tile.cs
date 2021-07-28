@@ -91,34 +91,46 @@ namespace the_amazing_race
             }
 
             List<Tile> path = new List<Tile>();
-            List<Tile> tilesAlreadyChecked = new List<Tile>();
+            List<Tile> tilesAlreadyVisited = new List<Tile>();
 
             Tile spotlightTile = this;
             path.Add(this);
 
             while (spotlightTile != someOtherTile)
             {
-                tilesAlreadyChecked.Add(spotlightTile);
+                DebugConsole.WriteLine("\n\tThe spotlight is on " + spotlightTile);
 
                 try
                 {
                     int fewestHops = spotlightTile.NumberOfHopsToOtherTiles[someOtherTile];
 
+                    Tile nearestNeighbor = spotlightTile;
+
                     foreach (Tile immediateNeighbor in spotlightTile.ImmediateNeighbors)
                     {
-                        if (immediateNeighbor.AllowsMovement
-                            && immediateNeighbor.NumberOfHopsToOtherTiles[someOtherTile] < fewestHops
-                            && !tilesAlreadyChecked.Contains(immediateNeighbor))
+                        DebugConsole.WriteLine("\t\t- and it's evaluating " + immediateNeighbor);
+
+                        if (!tilesAlreadyVisited.Contains(immediateNeighbor) && immediateNeighbor.AllowsMovement)
                         {
-                            fewestHops = immediateNeighbor.NumberOfHopsToOtherTiles[someOtherTile];
-                            spotlightTile = immediateNeighbor;
-                            path.Add(immediateNeighbor);
+                            int numberOfHops = immediateNeighbor.NumberOfHopsToOtherTiles[someOtherTile];
+
+                            if (fewestHops > numberOfHops)
+                            {
+                                fewestHops = numberOfHops;
+                                nearestNeighbor = immediateNeighbor;
+
+                                DebugConsole.WriteLine("\t\t\tFewest hops is now " + fewestHops);
+                            }
                         }
                     }
+
+                    spotlightTile = nearestNeighbor;
+                    tilesAlreadyVisited.Add(spotlightTile);
+                    path.Add(nearestNeighbor);
                 }
                 catch (Exception exception)
                 {
-                    Console.Error.WriteLine("The " + spotlightTile + " encountered an error.", exception);
+                    Console.Error.WriteLine("The " + spotlightTile + " encountered an error: " + exception.Message, exception);
                 }
             }
 

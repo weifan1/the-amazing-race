@@ -20,7 +20,7 @@ namespace the_amazing_race
         {
             MyTiles.Add(tile);
 
-            DebugConsole.WriteLine("\tAdding " + tile + ".");
+            DebugConsole.WriteLine("\tAdding the " + tile + ".");
         }
 
         public void IntroduceEachTileToImmediateNeighborsWhoAreNotItself()
