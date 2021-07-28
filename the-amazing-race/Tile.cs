@@ -6,7 +6,7 @@ namespace the_amazing_race
     class Tile
     {
         public static readonly double Radius = 1;
-        public static readonly double FudgeFactorToCompensateForGradualLossInFloatingPointPrecision = 1.002;
+        public static readonly double FudgeFactorToCompensateForGradualLossInFloatingPointPrecision = (Math.Sqrt(2) + 1) / 2;
         public static readonly double MaximumDistanceToQualifyAsImmediateNeighbor = Radius * FudgeFactorToCompensateForGradualLossInFloatingPointPrecision;
 
         public readonly Position MyPosition;

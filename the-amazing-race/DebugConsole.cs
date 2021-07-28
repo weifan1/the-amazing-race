@@ -4,7 +4,7 @@ namespace the_amazing_race
 {
     class DebugConsole
     {
-        private static bool isEnabled = true;
+        private static bool isEnabled = false;
 
         public static void WriteLine(string line)
         {
