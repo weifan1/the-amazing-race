@@ -10,26 +10,28 @@ namespace the_amazing_race
         {
             Console.WriteLine("\nThe Amazing Race has begun.");
 
-            try
+            if (args.Length == 0)
             {
-                if (args.Length == 0)
-                {
-                    throw new Exception("Expected a single command line argument for the input file and if applicable, its path.");
-                }
-
-                string[] inputStrings = ReadInput(args[0]);
-
-                Board board = CreateBoardFromInputOfUnknownFormat(inputStrings);
-                board.IntroduceEachTileToImmediateNeighborsWhoAreNotItself();
-                board.HaveEachTileCalculateItsNumberOfHopsToReachablyDistantNeighborsStartingWithItself();
-                
-                Tile[] path = board.EntranceTile.FindAnyShortestPathTo(board.ExitTile);
-
-                WriteOutput(path);
+                Console.Error.WriteLine("\nExpected a single command line argument for the input file and if applicable, its path.");
             }
-            catch (Exception exception)
+            else
             {
-                Console.Error.WriteLine("\n" + exception.Message);
+                try
+                {
+                    string[] inputStrings = ReadInput(args[0]);
+
+                    Board board = CreateBoardFromInputOfUnknownFormat(inputStrings);
+                    board.IntroduceEachTileToImmediateNeighborsWhoAreNotItself();
+                    board.HaveEachTileCalculateItsNumberOfHopsToReachablyDistantNeighborsStartingWithItself();
+
+                    Tile[] path = board.EntranceTile.FindAnyShortestPathTo(board.ExitTile);
+
+                    WriteOutput(path);
+                }
+                catch (Exception exception)
+                {
+                    Console.Error.WriteLine("\n" + exception.Message);
+                }
             }
 
             Console.WriteLine("\nThe Amazing Race has ended.");
@@ -50,41 +52,54 @@ namespace the_amazing_race
 
         private static string[] ReadInput(string fileName)
         {
-            List<string> inputStringList = new List<string>();
+            List<string> inputStrings = new List<string>();
 
             try
             {
-                using (StreamReader theStreamReader = new StreamReader(fileName))
+                using (StreamReader streamReader = new StreamReader(fileName))
                 {
-                    while (!theStreamReader.EndOfStream)
+                    while (!streamReader.EndOfStream)
                     {
-                        string Line = theStreamReader.ReadLine();
-                        inputStringList.Add(Line);
+                        string inputString = streamReader.ReadLine();
+                        inputStrings.Add(inputString);
                     }
                 }
             }
             catch (FileNotFoundException exception)
             {
-                throw new Exception("The specified input file, " + fileName + ", could not be found.", exception);
+                throw new FileNotFoundException("The specified input file does not exist in the working directory or if applicable, its relative path.", exception);
             }
 
-            return inputStringList.ToArray();
+            return inputStrings.ToArray();
         }
 
         private static Board CreateBoardFromInputOfUnknownFormat(string[] inputStrings)
         {
-            string theFirstInputString = inputStrings[0].ToLower();
-            bool isInputOfOriginalFormat = theFirstInputString.Contains("1");
+            bool isInputOfOriginalFormat = true;
+
+            string firstInputString = inputStrings[0].ToLower();
+
+            foreach (char c in firstInputString)
+            {
+                bool is0 = (c == '0');
+                bool is1 = (c == '1');
+
+                if (!(is0 || is1))
+                {
+                    isInputOfOriginalFormat = false;
+                    break;
+                }
+            }
 
             if (isInputOfOriginalFormat)
             {
-                DebugConsole.WriteLine("\nAt first glance, the input file appears to be of the original format.");
+                Console.WriteLine("\nAt first glance, the input file looks like it's in the original format.");
 
                 return CreateBoardFromInputOfOriginalFormat(inputStrings);
             }
             else
             {
-                DebugConsole.WriteLine("\nAt first glance, the input file appears to be of the custom format.");
+                Console.WriteLine("\nAt first glance, the input file looks like it's in the custom format.");
 
                 return CreateBoardFromInputOfCustomFormat(inputStrings);
             }
@@ -124,7 +139,7 @@ namespace the_amazing_race
             }
             catch (IndexOutOfRangeException exception)
             {
-                throw new Exception("The input data doesn't conform to the original format as expected.", exception);
+                throw new InvalidDataException("The input file doesn't conform to the original format as expected.", exception);
             }
 
             return board;
@@ -149,7 +164,7 @@ namespace the_amazing_race
                     break;
 
                 default:
-                    throw new Exception("The custom format requires the first input line to be one of these exact words: triangular, square, hexagonal.");
+                    throw new InvalidDataException("The custom format requires the first input line to be one of these exact words: triangular, square, hexagonal.");
             }
 
             TileSet tileSet = new TileSet(tileSetType);
@@ -160,29 +175,35 @@ namespace the_amazing_race
             {
                 for (int i = 1; i < inputStrings.Length; i++)
                 {
-                    string[] inputParameters = inputStrings[i].Split(',');
-                    double x = Double.Parse(inputParameters[0]);
-                    double y = Double.Parse(inputParameters[1]);
-                    bool allowsMovement = Boolean.Parse(inputParameters[2]);
+                    string[] tileParameters = inputStrings[i].Split(',');
+                    double x = Double.Parse(tileParameters[0]);
+                    double y = Double.Parse(tileParameters[1]);
+                    bool allowsMovement = Boolean.Parse(tileParameters[2]);
 
                     Position position = new Position(x, y);
                     Tile tile = new Tile(position, allowsMovement);
 
                     board.AddTile(tile);
+
+                    if (i == 0)
+                    {
+                        board.EntranceTile = tile;
+                    }
+
+                    if (i == board.MyTiles.Count - 1)
+                    {
+                        board.ExitTile = tile;
+                    }
                 }
             }
             catch (FormatException exception)
             {
-                throw new Exception("The input data doesn't conform to the custom format as expected.", exception);
+                throw new InvalidDataException("The input file doesn't conform to the custom format as expected.", exception);
             }
             catch (IndexOutOfRangeException exception)
             {
-                throw new Exception("The input data doesn't conform to the custom format as expected.", exception);
+                throw new InvalidDataException("The input file doesn't conform to the custom format as expected.", exception);
             }
-
-
-            board.EntranceTile = board.MyTiles[0];
-            board.ExitTile = board.MyTiles[board.MyTiles.Count - 1];
 
             return board;
         }

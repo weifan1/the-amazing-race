@@ -60,6 +60,7 @@ namespace the_amazing_race
 
             List<Tile> reachablyDistantNeighbors = new List<Tile>();
             reachablyDistantNeighbors.Add(this);
+
             DebugConsole.WriteLine("\n\tThe " + this);
 
             while (reachablyDistantNeighbors.Count > 0)
@@ -74,6 +75,7 @@ namespace the_amazing_race
                         {
                             distantNeighbor.NumberOfHopsToOtherTiles.Add(this, reachablyDistantNeighbor.NumberOfHopsToOtherTiles[this] + 1);
                             reachablyDistantNeighbors.Add(distantNeighbor);
+
                             DebugConsole.WriteLine("\t\t- discovered a reachably distant neighbor; the " + distantNeighbor + ".");
                         }
                     }
@@ -87,7 +89,7 @@ namespace the_amazing_race
         {
             if (!this.NumberOfHopsToOtherTiles.ContainsKey(someOtherTile))
             {
-                throw new Exception("The " + someOtherTile + " is not reachable from " + this);
+                throw new InvalidOperationException("The " + someOtherTile + " is not reachable from " + this);
             }
 
             List<Tile> path = new List<Tile>();
@@ -125,6 +127,7 @@ namespace the_amazing_race
                     }
 
                     spotlightTile = nearestNeighbor;
+
                     tilesAlreadyVisited.Add(spotlightTile);
                     path.Add(nearestNeighbor);
                 }
